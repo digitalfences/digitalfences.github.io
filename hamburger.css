@@ -1,0 +1,10 @@
+*{
+    border: 1px solid purple;
+}
+body{
+    background-color: lemonchiffon;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,10 @@
+*{
+    border: 1px solid blue;
+}
+body{
+    background-color: lemonchiffon;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+}
