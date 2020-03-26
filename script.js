@@ -1,142 +1,205 @@
-let divArray = document.querySelectorAll(".image-contentbox");
-let divImg = document.querySelectorAll('.image');
-let divContent = ["","","","","","","","","","","","","","",""];
-let url = "https://api.thecatapi.com/v1/images/search";
-let chicago1Url = "kn9c-c2s2.json";
-let chicago2Url ="e2v8-k3us.json";
-let chicago3Url ="wwy2-k7b3.json";
-let categoryURL = "https://api.thecatapi.com/v1/images/search?category_ids=";
-let apikey = "66356a00-6e21-4837-b13d-dcc4caee975a";
-let chicagoBase = "https://data.cityofchicago.org/resource/";
-let row =3
-let column = 1
-let buttonArray = document.querySelectorAll("button");
-let body = document.querySelector("body");
-
-body.addEventListener('click', focus);
-for (let i =0; i < 5; i++){
-    buttonArray[i].addEventListener('click', toggle)
-}
-
-for (let i = 0; i < 5; i++){
-    divArray[i].style.gridRow = row;
-    divArray[i].style.gridColumn = i;
-    assignContent(i, chicago3Url);
-    
-}
-row = 2;
-for (let i = 5; i < 10; i++){
-    divArray[i].style.gridRow = row;
-    divArray[i].style.gridColumn = i -5;
-    assignContent(i, chicago3Url);
-    
-}
-row =1;
-for (let i = 10; i < 15; i++){
-    divArray[i].style.gridRow = row;
-    divArray[i].style.gridColumn = i -10;
-    assignContent(i, chicago3Url);
-    
-}
-
-for (let i = 0; i<15; i++){
-    assignPhoto(i);   
-}
-
-function assignPhoto (i) {
-    fetch(url, {
-        headers: {
-            "x-api-key": apikey
-        }
-    })
-    .then(res => res.json())
-    .then(res => {
-        divImg[i].setAttribute("src",res[0].url);     
-    })
-    .catch(err => {})
-}
-function assignContent (i, urlAdd){
-    fetch(chicagoBase+ urlAdd)
-    .then(res => res.json())
-    .then(res => {
-        let dogFriend = "THE CANINE MENACE ABOUNDS...";
-        if (res[i].dog_friendly == 0){
-            dogFriend = "NO! CATZ RULE!";
-        }
-        divContent[i] = "<h1>Name: " + res[i].park_name + "</h1><p>Street Address: " + res[i].street_address +"<br><br>Acres: " +res[i].acres +"<br><br>Dog Friendly?: " +dogFriend +"</p>";    
-    })
-    .catch(err => {})
-    //set the content of each catBox
-}
-
-
 /**
- * focus()
+ * Automated Augury
+ * By Galen Emanuel
  * 
- * this function will take whichever div is clicked and expand it in the center of the screen
- * when the user clicks away they will return to normal view
+ * This site will render Tarot cards and tell your fortune 
  * 
- * @param {event object} e 
  */
 
-function focus(e) {
-    e.preventDefault();
-    let popUpDiv = document.querySelector('.modal');
-    let popUpContent = document.querySelector('.modal-content');
-    let popUpImage = popUpDiv.querySelector('.modal-image');
-    let main = document.querySelector('main');
-    popUpImage.style.display ="block";
-    popUpContent.style.display = "none";
-    
-    if (e.target.className != "image"){
-        if(e.target.className == 'modal-image'){
-            document.querySelector('.modal-image').style.display = "none"
-            document.querySelector('.modal-content').style.display ="block"
-        
-            popUpContent.style.background = "rgba (255,255,255,.4)";
-        }
-        else if (e.target.parentNode.className == 'modal-content'){
-            document.querySelector('.modal-image').style.display = "block"
-            document.querySelector('.modal-content').style.display ="none"
+
+
+
+
+
+
+
+
+/*
+Tarot API
+https://github.com/ekelen/tarot-api
+By EKelen
+
+Used here to power the augury part of my app
+
+
+cards returns an array of all cards
+example fetch
+let card = res[0];
+card.type == "major"
+card.name == "the Magician"
+card.name_short == "ar01"
+card.value == "1";
+card.value_int == 1;
+card.meaning_up = meaning in the upright position
+card.meaning_rev = meaning in the reversed position
+card.desc = a description of the card, usually in great detail
+
+*/
+let url = "https://rws-cards-api.herokuapp.com/api/v1/cards";
+
+/*
+The structural html pieces we need to access
+*/
+let querent = document.querySelector(".querent");
+let situation = document.querySelector(".situation");
+let foundation = document.querySelector(".foundation");
+let past = document.querySelector(".past");
+let shortTerm = document.querySelector(".short-term");
+let presentProblem = document.querySelector(".present-problem");
+let outsideInfluence = document.querySelector(".outside-influence");
+let insideInfluence = document.querySelector(".internal-influence");
+let hopesAndFears = document.querySelector(".hopes-and-fears");
+let longTermOutcome = document.querySelector(".long-term-outcome");
+let fatedCardArray = document.querySelectorAll(".card");
+let readingButton = document.querySelector("#start");
+
+
+
+
+/*
+The internal data structures I will use to store the information on the cards
+*/
+
+
+
+
+class TarotCard{
+    constructor(name, meaningUp, meaningDown,desc,imgPath){
+        this.name = name;
+        this.meaningUp = meaningUp;
+        this.meaningDown = meaningDown;
+        this.desc = desc;
+        this.imgPath = "img/"+imgPath+".jpg";
+        let oriInt = Math.floor(Math.random()*2);
+        if (oriInt == 0){
+            this.orientation = "reversed";
+            this.main = meaningDown;
         }
         else{
-            popUpDiv.style.display = "none"
-            return;
-        }   
+            this.orientation = "upright";
+            this.main = meaningUp
+        }
     }
-    else{
-        if(popUpDiv.style.display == "none"){
-            popUpDiv.style.display = "block";
-            popUpImage.setAttribute("src", e.target.src);
-            for(let i = 0; i < divImg.length; i++){
-                if(e.target == divImg[i]){
-                    popUpContent.innerHTML = divContent[i];
-                    popUpContent.style.textAlign = "center";
-                }
-            } 
+}
+//return new TarotCard(cards[i].name,cards[i].meaning_up, cards[i].meaning_rev, cards[i].desc, cards[i].name_short);
+
+class TarotDeck{
+    constructor(){
+        this.deck =[];
+        this.fatedCards =[];
+    }
+    /* The Fisher Yates shuffle algorithm as explained here
+    https://www.frankmitchell.org/2015/01/fisher-yates/ */
+    shuffleDeck(){
+        let temp = null;
+        let j = 0;
+        for(let i = this.deck.length -1; i > 0; i-=1){
+            j = Math.floor(Math.random()*(i + 1));
+            temp = this.deck[i];
+            this.deck[i]= this.deck[j];
+            this.deck[j] = temp;
+        
+        }
+    }
+    async makeDeck(){
+        let card;
+        let cards;
+        fetch(url)
+        .then(res=>res.json())
+        .then(res=>{
+            cards = res.cards;
+            for(let i = 0; i < cards.length; i++){
+                card = new TarotCard(cards[i].name,cards[i].meaning_up, cards[i].meaning_rev, cards[i].desc, cards[i].name_short);
+                this.deck.push(card);
+            }
+        })
+        .then(res => {
+            this.deck[18].main = "Material happiness, fortunate marriage, contentment."
+            this.deck[35].main = "Love, passion, friendship, affinity, union, concord, sympathy, the interrelation of the sexes, and--as a suggestion apart from all offices of divination--that desire which is not in Nature, but by which Nature is sanctified."
+            this.deck
+            this.fatedCards.push(...this.augury());
+        })
+        
+        
+    }
+    /*
+    A celtic cross takes 10 cards
+    */
+    augury(){
+        let deal = [];
+        this.shuffleDeck();
+        for (let i =0; i < 10; i++){
+            deal.push(this.deck.pop());
+        }
+        return deal;
+    }
+
+}
+let myDeck = new TarotDeck();
+myDeck.makeDeck();
+readingButton.addEventListener('click', start);
+/* 
+<h1>Your Results</h1>: 
+<h2>The Querent: </h2>
+<p>This card represents you. It's possible meanings ${myDeck.fatedCards[0].orientation} are: </p>
+<h2>The Situation: </h2>
+<p>This card represents the situation itself. It's possible meanings ${myDeck.fatedCards[0].orientation} are: </p>
+<h2>The Foundation: </h2>
+<p>This card represents the context around you. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
+<h2>The Past: </h2>
+<p>This card represents the events that have occurred recently. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
+<h2>The Short Term Outlook: </h2>
+<p>This card represents what will soon unfold. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
+<h2>The Present Problem: <h2>
+<p>This card represents the difficulties you face. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
+<h2>Outside Influence: </h2>
+<p>This card represents the influence of outside forces. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
+<h2>Internal Influence: </h2>
+<p>This card represents the influence of your own thinking. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
+<h2>Hopes And Fears: </h2>
+<p>This card represents your hopes and fears for the situation. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
+<h2>The Long Term Outlook: </h2>
+<p>This card represents the long arc the situation will take. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
+
+*/
+
+
+function start(){
+    let results = document.querySelector('.content');
+    for (let i = 0; i < myDeck.fatedCards.length;i++){
+        let currentCard = myDeck.fatedCards[i]
+        let cardIcon = fatedCardArray[i]
+        if(currentCard.orientation == "reversed"){
+            cardIcon.style.transform = "rotate(180deg)";
         }
         else{
-            popUpDiv.style.display = "none"
-            return;
+            cardIcon.style.transform = "rotate(0deg)";
         }
-    }     
-}
-/**
- * toggle()
- * 
- * this function will be implemented if I am able to complete the project early
- * it will toggle between various wireframes using buttons in the header
- * modal
- * hamburger
- * slideshow
- * accordion
- * tabs
- */
+        cardIcon.setAttribute('src',currentCard.imgPath);
+    }
+    results.innerHTML = `
+        <h1>Your Results</h1> 
+        <h2>The Querent: ${myDeck.fatedCards[0].name}</h2>
+        <p>This card represents you. It's possible meanings ${myDeck.fatedCards[0].orientation} are: ${myDeck.fatedCards[0].main}</p>
+        <h2>The Situation: ${myDeck.fatedCards[1].name}</h2>
+        <p>This card represents the situation itself. It's possible meanings ${myDeck.fatedCards[1].orientation} are: ${myDeck.fatedCards[1].main}</p>
+        <h2>The Foundation: ${myDeck.fatedCards[2].name}</h2>
+        <p>This card represents the context around you. It's possible meanings ${myDeck.fatedCards[2].orientation} are: ${myDeck.fatedCards[2].main}</p>
+        <h2>The Past: ${myDeck.fatedCards[3].name}</h2>
+        <p>This card represents the events that have occurred recently. It's possible meanings ${myDeck.fatedCards[3].orientation} are: ${myDeck.fatedCards[3].main}</p>
+        <h2>The Short Term Outlook: ${myDeck.fatedCards[4].name}</h2>
+        <p>This card represents what will soon unfold. It's possible meanings ${myDeck.fatedCards[4].orientation} are: ${myDeck.fatedCards[4].main}</p>
+        <h2>The Present Problem: ${myDeck.fatedCards[5].name}</h2>
+        <p>This card represents the difficulties you face. It's possible meanings ${myDeck.fatedCards[5].orientation} are: ${myDeck.fatedCards[5].main}</p>
+        <h2>Outside Influence: ${myDeck.fatedCards[6].name}</h2>
+        <p>This card represents the influence of outside forces. It's possible meanings ${myDeck.fatedCards[6].orientation} are: ${myDeck.fatedCards[6].main}</p>
+        <h2>Internal Influence: ${myDeck.fatedCards[7].name}</h2>
+        <p>This card represents the influence of your own thinking. It's possible meanings ${myDeck.fatedCards[7].orientation} are: ${myDeck.fatedCards[7].main}</p>
+        <h2>Hopes And Fears: ${myDeck.fatedCards[8].name}</h2>
+        <p>This card represents your hopes and fears for the situation. It's possible meanings ${myDeck.fatedCards[8].orientation} are: ${myDeck.fatedCards[8].main}</p>
+        <h2>The Long Term Outlook: ${myDeck.fatedCards[9].name}</h2>
+        <p>This card represents the long arc the situation will take. It's possible meanings ${myDeck.fatedCards[9].orientation} are: ${myDeck.fatedCards[9].main}</p>
+    ` 
 
-
-function toggle(e) {
-    let sheetSrc = document.querySelector("#style");
-    let newSheet = e.target.innerText;
-    let newSheetPath = "./" + newSheet + ".css";
-    sheetSrc.setAttribute('href',newSheetPath);
 }
+
