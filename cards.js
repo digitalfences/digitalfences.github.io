@@ -1,27 +1,5 @@
-/**
- * Automated Augury
- * By Galen Emanuel
- * 
- * This site will render Tarot cards and tell your fortune 
- * 
- */
 
-
-
-
-
-
-
-
-
-/*
-Tarot API
-https://github.com/ekelen/tarot-api
-By EKelen
-
-Used here to power the augury part of my app
-*/
-const tarot = {
+const cards = {
     "nhits": 78,
     "cards": [
       {
@@ -181,7 +159,7 @@ const tarot = {
         "value": "16",
         "value_int": 16,
         "meaning_up": "Misery, distress, indigence, adversity, calamity, disgrace, deception, ruin. It is a card in particular of unforeseen catastrophe.",
-        "meaning_rev": "Oppression, imprisonment, tyranny.",
+        "meaning_rev": "According to one account, the same in a lesser degree also oppression, imprisonment, tyranny.",
         "desc": "Occult explanations attached to this card are meagre and mostly disconcerting. It is idle to indicate that it depicts min in all its aspects, because it bears this evidence on the surface. It is said further that it contains the first allusion to a material building, but I do not conceive that the Tower is more or less material than the pillars which we have met with in three previous cases. I see nothing to warrant Papus in supposing that it is literally the fall of Adam, but there is more in favour of his alternative--that it signifies the materialization of the spiritual word. The bibliographer Christian imagines that it is the downfall of the mind, seeking to penetrate the mystery of God. I agree rather with Grand Orient that it is the ruin of the House of We, when evil has prevailed therein, and above all that it is the rending of a House of Doctrine. I understand that the reference is, however, to a House of Falsehood. It illustrates also in the most comprehensive way the old truth that \"except the Lord build the house, they labour in vain that build it.\"\nThere is a sense in which the catastrophe is a reflection from the previous card, but not on the side of the symbolism which I have tried to indicate therein. It is more correctly a question of analogy; one is concerned with the fall into the material and animal state, while the other signifies destruction on the intellectual side. The Tower has been spoken of as the chastisement of pride and the intellect overwhelmed in the attempt to penetrate the Mystery of God; but in neither case do these explanations account for the two persons who are the living sufferers. The one is the literal word made void and the other its false interpretation. In yet a deeper sense, it may signify also the end of a dispensation, but there is no possibility here for the consideration of this involved question."
       },
       {
@@ -211,7 +189,7 @@ const tarot = {
         "value": "19",
         "value_int": 19,
         "meaning_up": "Material happiness, fortunate marriage, contentment.",
-        "meaning_rev": "Material happiness, fortunate marriage, contentment in a lesser sense.",
+        "meaning_rev": "The same in a lesser sense.",
         "desc": "The naked child mounted on a white horse and displaying a red standard has been mentioned already as the better symbolism connected with this card. It is the destiny of the Supernatural East and the great and holy light which goes before the endless procession of humanity, coming out from the walled garden of the sensitive life and passing on the journey home. The card signifies, therefore, the transit from the manifest light of this world, represented by the glorious sun of earth, to the light of the world to come, which goes before aspiration and is typified by the heart of a child.\nBut the last allusion is again the key to a different form or aspect of the symbolism. The sun is that of consciousness in the spirit - the direct as the antithesis of the reflected light. The characteristic type of humanity has become a little child therein--a child in the sense of simplicity and innocence in the sense of wisdom. In that simplicity, he bears the seal of Nature and of Art; in that innocence, he signifies the restored world. When the self-knowing spirit has dawned in the consciousness above the natural mind, that mind in its renewal leads forth the animal nature in a state of perfect conformity."
       },
       {
@@ -461,7 +439,7 @@ const tarot = {
         "suit": "cups",
         "type": "minor",
         "meaning_up": "Love, passion, friendship, affinity, union, concord, sympathy, the interrelation of the sexes, and--as a suggestion apart from all offices of divination--that desire which is not in Nature, but by which Nature is sanctified.",
-        "meaning_rev": "Love, passion, friendship, affinity, union, concord, sympathy, the interrelation of the sexes, and--as a suggestion apart from all offices of divination--that desire which is not in Nature, but by which Nature is sanctified.",
+        "meaning_rev": "",
         "desc": "A youth and maiden are pledging one another, and above their cups rises the Caduceus of Hermes, between the great wings of which there appears a lion's head. It is a variant of a sign which is found in a few old examples of this card. Some curious emblematical meanings are attached to it, but they do not concern us in this place."
       },
       {
@@ -862,194 +840,3 @@ const tarot = {
       }
     ]
   }
-
-/*
-cards returns an array of all cards
-example fetch
-let card = res[0];
-card.type == "major"
-card.name == "the Magician"
-card.name_short == "ar01"
-card.value == "1";
-card.value_int == 1;
-card.meaning_up = meaning in the upright position
-card.meaning_rev = meaning in the reversed position
-card.desc = a description of the card, usually in great detail
-
-*/
-
-/*
-The structural html pieces we need to access
-*/
-let querent = document.querySelector(".querent");
-let situation = document.querySelector(".situation");
-let foundation = document.querySelector(".foundation");
-let past = document.querySelector(".past");
-let shortTerm = document.querySelector(".short-term");
-let presentProblem = document.querySelector(".present-problem");
-let outsideInfluence = document.querySelector(".outside-influence");
-let insideInfluence = document.querySelector(".internal-influence");
-let hopesAndFears = document.querySelector(".hopes-and-fears");
-let longTermOutcome = document.querySelector(".long-term-outcome");
-let fatedCardArray = document.querySelectorAll(".card");
-let readingButton = document.querySelector("#start");
-let resetButton = document.querySelector("#reset");
-
-/*
-The internal data structures I will use to store the information on the cards
-*/
-
-class TarotCard{
-    constructor(name, meaningUp, meaningDown,desc,imgPath){
-        this.name = name;
-        this.meaningUp = meaningUp;
-        this.meaningDown = meaningDown;
-        this.desc = desc;
-        this.imgPath = "img/"+imgPath+".jpg";
-        let oriInt = Math.floor(Math.random()*2);
-        if (oriInt == 0){
-            this.orientation = "reversed";
-            this.main = meaningDown;
-        }
-        else{
-            this.orientation = "upright";
-            this.main = meaningUp
-        }
-    }
-}
-//return new TarotCard(cards[i].name,cards[i].meaning_up, cards[i].meaning_rev, cards[i].desc, cards[i].name_short);
-
-class TarotDeck{
-    constructor(){
-        this.deck =[];
-        this.fatedCards =[];
-    }
-    /* The Fisher Yates shuffle algorithm as explained here
-    https://www.frankmitchell.org/2015/01/fisher-yates/ */
-    shuffleDeck(){
-        let temp = null;
-        let j = 0;
-        for(let i = this.deck.length -1; i > 0; i-=1){
-            j = Math.floor(Math.random()*(i + 1));
-            temp = this.deck[i];
-            this.deck[i]= this.deck[j];
-            this.deck[j] = temp;
-        
-        }
-    }
-    makeDeck(){
-        let card;
-        let cards = tarot.cards;
-        for(let i = 0; i < cards.length; i++){
-            card = new TarotCard(cards[i].name,cards[i].meaning_up, cards[i].meaning_rev, cards[i].desc, cards[i].name_short);
-            this.deck.push(card);
-        }
-        console.log(this.deck);
-            this.fatedCards.push(...this.augury());
-    }
-    /*
-    A celtic cross takes 10 cards
-    */
-    augury(){
-        let deal = [];
-        this.shuffleDeck();
-        for (let i =0; i < 10; i++){
-            deal.push(this.deck.pop());
-        }
-        return deal;
-    }
-
-}
-let myDeck = new TarotDeck();
-myDeck.makeDeck();
-readingButton.addEventListener('click', start);
-resetButton.addEventListener('click', reset);
-/* 
-<h1>Your Results</h1>: 
-<h2>The Querent: </h2>
-<p>This card represents you. It's possible meanings ${myDeck.fatedCards[0].orientation} are: </p>
-<h2>The Situation: </h2>
-<p>This card represents the situation itself. It's possible meanings ${myDeck.fatedCards[0].orientation} are: </p>
-<h2>The Foundation: </h2>
-<p>This card represents the context around you. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
-<h2>The Past: </h2>
-<p>This card represents the events that have occurred recently. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
-<h2>The Short Term Outlook: </h2>
-<p>This card represents what will soon unfold. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
-<h2>The Present Problem: <h2>
-<p>This card represents the difficulties you face. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
-<h2>Outside Influence: </h2>
-<p>This card represents the influence of outside forces. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
-<h2>Internal Influence: </h2>
-<p>This card represents the influence of your own thinking. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
-<h2>Hopes And Fears: </h2>
-<p>This card represents your hopes and fears for the situation. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
-<h2>The Long Term Outlook: </h2>
-<p>This card represents the long arc the situation will take. It's possible meanings ${myDeck.fatedCards[0].orientation} are:</p>
-
-*/
-
-function reset(){
-  myDeck = new TarotDeck();
-  myDeck.makeDeck();
-  let results = document.querySelector('.content');
-  let fatedCardArray = document.querySelectorAll(".card");
-  for (let i = 0; i < fatedCardArray.length;i++){
-    fatedCardArray[i].setAttribute('src','img/Tarot_Card_-_the_Symbol_of_Baphomet.jpg');
-  }
-  results.innerHTML = "<h1>Your Results</h1>";
-
-}
-function start(){
-    let results = document.querySelector('.content');
-    for (let i = 0; i < myDeck.fatedCards.length;i++){
-        let currentCard = myDeck.fatedCards[i]
-        let cardIcon = fatedCardArray[i]
-        if(currentCard.orientation == "reversed"){
-            cardIcon.style.transform = "rotate(180deg)";
-            if(currentCard ==myDeck.fatedCards[1]){
-              cardIcon.style.transform ="rotate(90deg) translateY(20px)";
-            }
-            if(currentCard ==myDeck.fatedCards[0]){
-              cardIcon.style.transform = "rotate(180deg) translateX(-25px)";
-            }
-        }
-        else{
-            cardIcon.style.transform = "rotate(0deg)";
-            if(currentCard ==myDeck.fatedCards[1]){
-              cardIcon.style.transform ="rotate(270deg) translateY(-20px)";
-            }
-            if(currentCard ==myDeck.fatedCards[0]){
-              cardIcon.style.transform = "rotate(0deg) translateX(25px)";
-            }
-        }
-        
-        cardIcon.setAttribute('src',currentCard.imgPath);
-        cardIcon.setAttribute('title',currentCard.desc);
-    }
-    results.innerHTML = `
-        <h1>Your Results</h1> 
-        <h2>The Querent: ${myDeck.fatedCards[0].name}</h2>
-        <p>This card represents you. It's possible meanings ${myDeck.fatedCards[0].orientation} are: ${myDeck.fatedCards[0].main}</p>
-        <h2>The Situation: ${myDeck.fatedCards[1].name}</h2>
-        <p>This card represents the situation itself. It's possible meanings ${myDeck.fatedCards[1].orientation} are: ${myDeck.fatedCards[1].main}</p>
-        <h2>The Foundation: ${myDeck.fatedCards[2].name}</h2>
-        <p>This card represents the context around you. It's possible meanings ${myDeck.fatedCards[2].orientation} are: ${myDeck.fatedCards[2].main}</p>
-        <h2>The Past: ${myDeck.fatedCards[3].name}</h2>
-        <p>This card represents the events that have occurred recently. It's possible meanings ${myDeck.fatedCards[3].orientation} are: ${myDeck.fatedCards[3].main}</p>
-        <h2>The Short Term Outlook: ${myDeck.fatedCards[4].name}</h2>
-        <p>This card represents what will soon unfold. It's possible meanings ${myDeck.fatedCards[4].orientation} are: ${myDeck.fatedCards[4].main}</p>
-        <h2>The Present Problem: ${myDeck.fatedCards[5].name}</h2>
-        <p>This card represents the difficulties you face. It's possible meanings ${myDeck.fatedCards[5].orientation} are: ${myDeck.fatedCards[5].main}</p>
-        <h2>Outside Influence: ${myDeck.fatedCards[6].name}</h2>
-        <p>This card represents the influence of outside forces. It's possible meanings ${myDeck.fatedCards[6].orientation} are: ${myDeck.fatedCards[6].main}</p>
-        <h2>Internal Influence: ${myDeck.fatedCards[7].name}</h2>
-        <p>This card represents the influence of your own thinking. It's possible meanings ${myDeck.fatedCards[7].orientation} are: ${myDeck.fatedCards[7].main}</p>
-        <h2>Hopes And Fears: ${myDeck.fatedCards[8].name}</h2>
-        <p>This card represents your hopes and fears for the situation. It's possible meanings ${myDeck.fatedCards[8].orientation} are: ${myDeck.fatedCards[8].main}</p>
-        <h2>The Long Term Outlook: ${myDeck.fatedCards[9].name}</h2>
-        <p>This card represents the long arc the situation will take. It's possible meanings ${myDeck.fatedCards[9].orientation} are: ${myDeck.fatedCards[9].main}</p>
-    ` 
-
-}
-

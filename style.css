@@ -11,6 +11,7 @@ body{
 }
 .game-title{
     display:flex;
+    text-align: center;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -19,7 +20,7 @@ body{
     grid-row: 1;
     background-color: #ff6700;
 }
-#start{
+button{
     color: black;
     border: 1px solid #3a243b;
     background-color: #ff6700;
@@ -41,8 +42,8 @@ body{
     justify-content: center;
     grid-row: 3/5;
     grid-column: 2;
-    height: 150px;
-    width: 150px;
+    height: 100%;
+    width: 100%;
 }
 .card{
     margin-top: 10px;
@@ -50,11 +51,12 @@ body{
     width: 50px;
 }
 .querent{
-    
+    transform: translateX(25px);
     margin-top: 0px;
 }
 .situation{
     margin-top: 0px;
+    transform: rotate(90deg) translateY(20px);
 }
 .card-holder1{
     grid-row:5/span 6;
