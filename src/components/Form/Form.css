@@ -1,0 +1,80 @@
+select{
+    width: 300px;
+    padding-left:1em;
+    background-color: white;
+}
+input{
+    width: 300px;
+    padding-left:1em;
+    width: 300px;
+    background-color: white;
+}
+.large {
+    height: 60px;
+}
+.medium{
+    height: 46px;
+}
+.small{
+    height: 38px;
+}
+
+input.filled {
+    background-color: rgba(250,250,251);
+}
+select.filled {
+    background-color: rgba(250,250,251);
+}
+.number-form{
+    display:flex;
+    width: 116px;
+    height: 46px;
+    background-color: rgba(250,250,251);
+
+}
+.number-form input{
+    width:33%;
+    text-align: center;
+    background-color: rgba(250,250,251);
+    border: none;
+}
+.number-form button{
+    width:33%;
+    padding:0px;
+    color:rgba(51,160,255);
+    background-color: rgba(250,250,251);
+    border:none;
+}
+#textButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35%;
+    padding: 1px 1px 1px 1px;
+    text-align: center;
+    border:none;
+}
+#textButton p{
+    margin:auto;
+    width: 100%;
+    height: 100%;
+}
+#textButtonField{
+    border:none;
+    width: 65%;
+}
+.flex{
+    align-items: center;
+    
+    display: flex;
+    border: 2px solid rgba(241,243,244);
+}
+.flex.small{
+    width: 50%;
+}
+.flex.medium{
+    width:60%;
+}
+.flex.large{
+    width: 70%;
+}
