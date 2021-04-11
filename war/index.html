@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="./style.css" rel="stylesheet">
+    <title>Game of War</title>
+
+  </head>
+  <body>
+    <h1>Welcome to the game of war!</h1></p>
+    <div class="content hidden">  
+    <h1>Instructions</h1>  
+    <p class="instructions hidden">
+      Please name your player and start the game.<br><br>
+      Game Rules:<br>
+      1. Each player gets dealt half the deck, 26 cards, and the cards are put face down in a stack in front of the players.<br>
+      2. Both players turn their top card face up at the same time. The person with the higher card wins that draw, and takes both the cards. They are put to the side to form a new stack, which the player can use when he finishes his current stack.<br>
+      3. If both players draw a card of the same rank, e.g. they both draw 8s, then there's a war. The face up cards are left on the table and each player puts three cards face down on the table, and then puts one card face up. The face up card determines who wins the war and gets all 10 cards that are on the table at this point. If the face up card is again the same rank, then the war goes on, three more face down, one face up etc.<br>
+      4. First player to finish all their cards loses the game.<br>
+      5. If a player finishes their cards during a war without having enough cards to finish the war then he loses immediately.<br>
+    </p>
+    </div>
+    <div class="card-display shown">
+      <img class="card-one" src="./img/PNG-cards-1.3/black_joker.png">
+      <img class="card-two" src="./img/PNG-cards-1.3/black_joker.png">
+    </div>
+    <div class="button-friends hidden">
+      <button type ="button" onclick="clickHandler()">Start Button</button>
+      <button type ="button" onclick="nameHandler1()">Set Player Name</button>
+      <button type ="button" onclick="nameHandler2()">Set Computer Name</button>
+    </div>
+    
+    
+  </body>
+  <script>
+        let warGame;
+        let name1 = "Player 1";
+        let name2 = "Player 2";
+        function clickHandler(){
+            warGame = new WarGame(name1,name2);
+            array = document.getElementsByClassName("hidden");
+            for (let i = 0; i < array.length;i++){
+              array[i].style.display = "none";
+            }
+            document.getElementsByClassName("shown")[0].style.display = "flex";
+        }
+        function nameHandler1(){
+            name1 = window.prompt();
+        }
+        function nameHandler2(){
+            name2 = window.prompt();
+        }
+    </script>
+  <script src = "./script.js">
+    
+
+</script>
+</html>

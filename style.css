@@ -1,0 +1,26 @@
+html {
+    width: 100%;
+    height: 100%;
+}
+body {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgb(236, 236, 236), rgb(226, 177, 177),rgb(151, 78, 78),rgb(230, 25, 25),rgb(66, 1, 1));
+}
+body div.websites {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    background-color: transparent;
+    border: none;
+}
+body div {
+    width: 60%;
+    margin: 30px;
+    background-color: white;
+    border: 4px solid black;
+    height: 200px;
+    text-align: center;
+}
